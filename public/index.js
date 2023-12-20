@@ -1,6 +1,6 @@
-alert("Javascript Loaded Again");
+fetch("/items")
+  .then((res) => res.json())
+  .then((data) => {
+    console.log("All Items", data);
+  });
 
-$.get('/pets')
-.success((petData) => {
-  //manipulate DOM to display pet data
-})

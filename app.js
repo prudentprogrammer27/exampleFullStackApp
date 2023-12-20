@@ -1,23 +1,31 @@
 import express from 'express';
 import path from 'path';
+import pg from 'pg';
 
+const { Pool } = pg;
 const app = express();
 
 const expressPort = 8002;
 
+const pool = new Pool ({
+  user: 'kevingoble',
+  host: 'localhost',
+  database: 'items',
+  port: 5432
+});
+
 app.use(express.static('public'));
+app.use(express.json());
 
-//const staticPath = path.join(__dirname, 'public');
-app.get('/pets', (req,res) => {
-  res.send(petData);
-})
-// app.get('/', (req, res) => {
-//   res.sendFile('/Users/kevingoble/HR/MCSP/2311/exampleFullStackApp/public/index.html');
-// });
+app.get('/items', (req,res) => {
+  pool.query('SELECT * FROM items')
+    .then((data) => res.send(data.rows))
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Sorry!");
+    })
+});
 
-// app.get('/index.js', (req, res) => {
-//   res.sendFile('/Users/kevingoble/HR/MCSP/2311/exampleFullStackApp/public/index.js');
-// });
 
 app.listen(expressPort, () => {
   console.log(`Listening on port ${expressPort}...`);
